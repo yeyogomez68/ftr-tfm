@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tfm_admin/MyHGomePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tfm_admin/NewUserPage.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class NewUserPage extends StatefulWidget {
+  const NewUserPage({super.key});
 
   @override
-  State createState() => _LoginPageState();
+  State createState() => _NewUserPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _NewUserPageState extends State<NewUserPage> {
   late String email, password;
   final _formKey = GlobalKey<FormState>();
   String error = '';
@@ -25,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Login'),
+          title: const Text('Nuevo Usuario'),
         ),
         body: Column(
           mainAxisSize: MainAxisSize.max,
@@ -33,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             Padding(
               padding: EdgeInsets.all(16.0),
-              child: Text("Login",
+              child: Text("Registro de nuevo usuario",
                   style: TextStyle(color: Colors.black, fontSize: 24)),
             ),
             Offstage(
@@ -44,35 +43,19 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: formLogin(),
+              child: fomrRegisterUser(),
             ),
           ],
         ));
   }
 
-  Widget formLogin() {
+  Widget fomrRegisterUser() {
     return Form(
         key: _formKey,
         child: Column(
-            children: [buildEmail(), buildPassword(), buildLoginButton(),newUser()]));
+            children: [buildEmail(), buildPassword(), buildRegisterButton(),]));
   }
 
-  Widget newUser() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        const Text('¿Eres Nuevo?'),
-        TextButton(
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const NewUserPage()));
-          },
-          child: const Text('Registrate'),
-        )
-      ],
-    );
-
-  }
 
   Widget buildEmail() {
     return TextFormField(
@@ -106,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget buildLoginButton() {
+  Widget buildRegisterButton() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ElevatedButton(
@@ -114,41 +97,29 @@ class _LoginPageState extends State<LoginPage> {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
             UserCredential? userCredential =
-                await signInWithEmailAndPassword(email, password);
+                await createUserWithEmailAndPassword(email, password);
             if (userCredential != null) {
               if (userCredential.user != null) {
-                if (userCredential.user!.emailVerified) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MyHomePage()),
-                      (route) => false);
-                } else {
-                  setState(() {
-                    error = 'Verifica tu correo electronico primero';
-                  });
-                }
-              } else {
-                setState(() {
-                  error = 'Upsss Paso algo y no sabemos que fue, intenta de nuevo';
-                });
+                await userCredential.user!.sendEmailVerification();
+                Navigator.of(context).pop();
               }
             }
           }
         },
-        child: const Text('Login'),
+        child: const Text('Registrate'),
       ),
     );
   }
 
-  Future<UserCredential?> signInWithEmailAndPassword(
+  Future<UserCredential?> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+          .createUserWithEmailAndPassword(email: email, password: password);
       return userCredential;
     } on FirebaseAuthException catch (e) {
       setState(() {
-        error = 'Error o credenciales invalidas';
+        error = e.code.toString();
       });
     }
   }

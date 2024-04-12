@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:447951543821:android:afb8130bb1070bcf36ff44",
+        "android_client_info": {
+          "package_name": "com.example.tfm_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447951543821-vt0q74pdfs3sul3cfou390lj05chrji9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoDOofm70f5RyEqIAgIzdsxeHCmI7Ksao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447951543821-vt0q74pdfs3sul3cfou390lj05chrji9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "447951543821-0dfufis5sii0qmiighecl0ck8s28b7ua.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tfmAdmin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:447951543821:android:a5dd148e2fd751c136ff44",
         "android_client_info": {
           "package_name": "dev.tfm.admin"
@@ -39,10 +75,10 @@
               "client_type": 3
             },
             {
-              "client_id": "447951543821-vd7fqao4l0foanilf3t85e6v8bcpeqen.apps.googleusercontent.com",
+              "client_id": "447951543821-0dfufis5sii0qmiighecl0ck8s28b7ua.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "dev.tfm.admin"
+                "bundle_id": "com.example.tfmAdmin"
               }
             }
           ]
