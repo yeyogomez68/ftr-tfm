@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:camera/camera.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imgLib; // Use an alias for clarity
@@ -58,18 +57,18 @@ class _CameraPageState extends State<CameraPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Subida completada'),
-        content: Text('¿Deseas confirmar la subida de la imagen?'),
+        title: const Text('Subida completada'),
+        content: const Text('¿Deseas confirmar la subida de la imagen?'),
         actions: <Widget>[
           TextButton(
-            child: Text('Confirmar'),
+            child: const Text('Confirmar'),
             onPressed: () {
               Navigator.of(context).pop();
               // Implement your confirmation action here
             },
           ),
           TextButton(
-            child: Text('Cancelar'),
+            child: const Text('Cancelar'),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -83,7 +82,7 @@ class _CameraPageState extends State<CameraPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tomar foto y subir a Firebase'),
+        title: const Text('Tomar foto y subir a Firebase'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -91,11 +90,11 @@ class _CameraPageState extends State<CameraPage> {
           if (_imageFile != null)
             Image.file(_imageFile, width: 300, height: 300)
           else
-            Text('No se ha seleccionado ninguna imagen'),
+            const Text('No se ha seleccionado ninguna imagen'),
           DropdownButton<String>(
             value: _selectedTreeType,
-            hint: Text('Seleccionar tipo de árbol'),
-            items: <DropdownMenuItem<String>>[
+            hint: const Text('Seleccionar tipo de árbol'),
+            items: const <DropdownMenuItem<String>>[
               DropdownMenuItem<String>(
                 value: 'almendro',
                 child: Text('Almendro'),

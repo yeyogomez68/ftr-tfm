@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tfm_admin/MyHGomePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class NewUserPage extends StatefulWidget {
@@ -30,14 +29,14 @@ class _NewUserPageState extends State<NewUserPage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(16.0),
               child: Text("Registro de nuevo usuario",
                   style: TextStyle(color: Colors.black, fontSize: 24)),
             ),
             Offstage(
               offstage: error == '',
-              child: Padding(
+              child: const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text("error", style: TextStyle(color: Colors.red))),
             ),
@@ -122,5 +121,6 @@ class _NewUserPageState extends State<NewUserPage> {
         error = e.code.toString();
       });
     }
+    return null;
   }
 }

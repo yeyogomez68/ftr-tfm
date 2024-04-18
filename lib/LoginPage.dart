@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:tfm_admin/MyHGomePage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:tfm_admin/MyHGomePage.dart';
 import 'package:tfm_admin/NewUserPage.dart';
+import 'package:crypto/crypto.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,14 +37,14 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(16.0),
               child: Text("Login",
                   style: TextStyle(color: Colors.black, fontSize: 24)),
             ),
             Offstage(
               offstage: error == '',
-              child: Padding(
+              child: const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text("error", style: TextStyle(color: Colors.red))),
             ),
@@ -54,7 +60,79 @@ class _LoginPageState extends State<LoginPage> {
     return Form(
         key: _formKey,
         child: Column(
-            children: [buildEmail(), buildPassword(), buildLoginButton(),newUser()]));
+            children: [buildEmail(), 
+            buildPassword(), 
+            buildLoginButton(),
+            newUser(),
+            buildOrLine(),
+            buildBtnGoogleApple()]));
+  }
+
+  Widget buildOrLine() {
+    return const Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(child: Divider()),
+        Text(' ó '),
+        Expanded(child: Divider()),
+      ],
+    );
+  }
+
+  Widget buildBtnGoogleApple() {
+    return Column(
+      children: [
+        SignInButton(
+          Buttons.google,
+          onPressed: () async {
+            await getInGoogle();
+            if (FirebaseAuth.instance.currentUser != null) {
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const MyHomePage()), (Route<dynamic> route) => false);
+            }
+          },
+        ),
+        Offstage(
+          offstage: !Platform.isIOS,
+          child: SignInButton(
+            Buttons.apple,
+            onPressed: () async {
+              await getInApple();
+              if (FirebaseAuth.instance.currentUser != null) {
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const MyHomePage()), (Route<dynamic> route) => false);
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<UserCredential> getInGoogle() async { 
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn(); 
+    final GoogleSignInAuthentication? googleAuthentication = await googleUser?.authentication;
+    final credentials = GoogleAuthProvider.credential(
+      accessToken: googleAuthentication?.accessToken,
+      idToken: googleAuthentication?.idToken
+    );
+    return FirebaseAuth.instance.signInWithCredential(credentials);
+  }
+
+  Future<UserCredential> getInApple() async { 
+    final rawNoce = generateNonce();
+    final nonce = sha256ToString(rawNoce);
+    final appleCredentials = await SignInWithApple.getAppleIDCredential(scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName], nonce: nonce); 
+    final authCredential = OAuthProvider("apple.com").credential(
+      idToken: appleCredentials.identityToken,
+      rawNonce: rawNoce
+    );
+    return await FirebaseAuth.instance.signInWithCredential(authCredential);
+  }
+
+  String sha256ToString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 
   Widget newUser() {
@@ -146,10 +224,11 @@ class _LoginPageState extends State<LoginPage> {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       return userCredential;
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       setState(() {
         error = 'Error o credenciales invalidas';
       });
     }
+    return null;
   }
 }
