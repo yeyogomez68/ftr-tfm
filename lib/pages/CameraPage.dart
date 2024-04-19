@@ -5,6 +5,8 @@ import 'package:image/image.dart' as imgLib; // Use an alias for clarity
 import 'package:image_picker/image_picker.dart'; // Import the image_picker package
 
 class CameraPage extends StatefulWidget {
+  const CameraPage({super.key});
+
   @override
   _CameraPageState createState() => _CameraPageState();
 }
@@ -29,11 +31,6 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Future<void> _uploadImage() async {
-    if (_imageFile == null || _selectedTreeType == null) {
-      return;
-    }
-
-    // Decode the image file into a Dart image object
     final img = imgLib.decodeImage(_imageFile.readAsBytesSync());
 
     // Resize the image to a suitable size for uploading
@@ -87,10 +84,7 @@ class _CameraPageState extends State<CameraPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          if (_imageFile != null)
-            Image.file(_imageFile, width: 300, height: 300)
-          else
-            const Text('No se ha seleccionado ninguna imagen'),
+          Image.file(_imageFile, width: 300, height: 300),
           DropdownButton<String>(
             value: _selectedTreeType,
             hint: const Text('Seleccionar tipo de árbol'),
@@ -113,11 +107,11 @@ class _CameraPageState extends State<CameraPage> {
           ),
           ElevatedButton(
             onPressed: _pickImage,
-            child: Text('Tomar foto'),
+            child: const Text('Tomar foto'),
           ),
           ElevatedButton(
             onPressed: _uploadImage,
-            child: Text('Subir imagen'),
+            child: const Text('Subir imagen'),
           ),
         ],
       ),

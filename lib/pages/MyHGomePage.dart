@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tfm_admin/LoginPage.dart';
+import 'package:tfm_admin/pages/LoginPage.dart';
 import 'package:tfm_admin/widgets/CameraButton.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -24,14 +24,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Mi pagina de inicio"),
+        title: const Text("Mi pagina de inicio"),
         actions: [
           InkWell(
             onTap: () {
               FirebaseAuth.instance.signOut();
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LoginPage()), (route) => false);
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const LoginPage()), (route) => false);
             },
-            child: Icon(Icons.login),
+            child: const Icon(Icons.login),
           )
         ],
       ),
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: CameraButton(),
+      floatingActionButton: const CameraButton(),
     );
   }
 }

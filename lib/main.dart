@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tfm_admin/LoginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tfm_admin/pages/LoginPage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }

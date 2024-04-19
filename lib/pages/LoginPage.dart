@@ -6,8 +6,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:tfm_admin/MyHGomePage.dart';
-import 'package:tfm_admin/NewUserPage.dart';
+import 'package:tfm_admin/pages/MyHGomePage.dart';
+import 'package:tfm_admin/pages/NewUserPage.dart';
 import 'package:crypto/crypto.dart';
 
 class LoginPage extends StatefulWidget {
