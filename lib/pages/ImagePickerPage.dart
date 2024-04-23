@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tfm_admin/functions/ImageUtils.dart';
+import 'package:tfm_admin/functions/StorageUtils.dart';
 
 class ImagePickerPage extends StatefulWidget {
   @override
@@ -20,7 +21,8 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
     final pickedFile = await picker.pickImage(source: source);
 
     if (pickedFile != null) {
-      final compressedFile = await ImageUtils.compressImage(File(pickedFile.path));
+      final compressedFile =
+          await ImageUtils.compressImage(File(pickedFile.path));
 
       setState(() {
         _imageFile = compressedFile;
@@ -71,10 +73,48 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
           ),
           Offstage(
             offstage: _imageFile == null,
-            child: Padding(padding: const EdgeInsets.all(8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
-                onPressed: () {
-                  
+                onPressed: () async {
+                  showDialog(
+                    context: context,
+                    barrierDismissible:
+                        false, // Evita que se cierre al tocar afuera
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor: Colors
+                            .transparent,
+                        contentPadding:
+                            EdgeInsets.zero,
+                        elevation: 0.0,
+                        content: Container(
+                          height: 100.0,
+                          color: Colors
+                              .transparent,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                  final downloadUrl = await StorageUtils().uploadFile(
+                      _imageFile!, '$_selectedCategory/${DateTime.now()}.jpg');
+                  Navigator.of(context).pop();
+                  if (downloadUrl.isNotEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Imagen subida con éxito'),
+                        duration: Duration(seconds: 5),
+                      ),
+                    );
+                    setState(() {
+                      _imageFile = null;
+                    });
+                  } else {
+                    print('Error al subir la imagen');
+                  }
                 },
                 child: const Text('Subir al servidor'),
               ),
@@ -105,10 +145,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
               child: Icon(Icons.photo_library),
             ),
           ),
-          Offstage(
-            offstage: _imageFile != null,
-            child: SizedBox(height: 16)
-            ),
+          Offstage(offstage: _imageFile != null, child: SizedBox(height: 16)),
           Offstage(
             offstage: _imageFile != null,
             child: FloatingActionButton(

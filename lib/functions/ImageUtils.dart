@@ -8,7 +8,8 @@ class ImageUtils {
     final tempPath = tempDir.path;
 
     final image = img.decodeImage(imageFile.readAsBytesSync());
-    final compressedImage = img.encodeJpg(image!, quality: 70);
+    final resizedImage = img.copyResize(image!, width: 600, height: 800);
+    final compressedImage = img.encodeJpg(resizedImage, quality: 70);
 
     final compressedFile = File('$tempPath/image.jpg');
     await compressedFile.writeAsBytes(compressedImage);
