@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tfm_admin/pages/FilePickerPage.dart';
 import 'package:tfm_admin/pages/LoginPage.dart';
 import 'package:tfm_admin/widgets/CameraButton.dart';
 
@@ -11,13 +12,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +30,28 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       floatingActionButton: const CameraButton(),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Cargar un archivo de datos'),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => FilePickerPage()));
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
