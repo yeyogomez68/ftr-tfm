@@ -44,9 +44,9 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Offstage(
               offstage: error == '',
-              child: const Padding(
+              child: Padding(
                   padding: EdgeInsets.all(8.0),
-                  child: Text("error", style: TextStyle(color: Colors.red))),
+                  child: Text(error, style: TextStyle(color: Colors.red))),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -224,10 +224,16 @@ class _LoginPageState extends State<LoginPage> {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       return userCredential;
-    } on FirebaseAuthException {
-      setState(() {
-        error = 'Error o credenciales invalidas';
-      });
+    } catch (e) {
+      if (e is FirebaseAuthException) {
+        setState(() {
+          error = 'Error o credenciales invalidas';
+        });
+      } else {
+        setState(() {
+          error = e.toString();
+        });
+      }
     }
     return null;
   }

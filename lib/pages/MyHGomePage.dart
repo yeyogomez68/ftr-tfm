@@ -18,7 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Mi pagina de inicio"),
+        title: const Text("Urban Tree Vision"),
         actions: [
           InkWell(
             onTap: () {
