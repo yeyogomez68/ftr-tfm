@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tfm_admin/functions/FireDataBase.dart';
 import 'package:tfm_admin/functions/ImageUtils.dart';
 import 'package:tfm_admin/functions/StorageUtils.dart';
 
@@ -13,8 +14,24 @@ class ImagePickerPage extends StatefulWidget {
 
 class _ImagePickerPageState extends State<ImagePickerPage> {
   File? _imageFile;
-  String _selectedCategory = 'Arbol 1';
-  List<String> _categories = ['Arbol 1', 'Arbol 2', 'Arbol 3'];
+  String _selectedCategory = '';
+  List<String> _categories = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    List<String> categories = await FireDataBase.getCategories();
+    setState(() {
+      _categories = categories;
+      if (categories.isNotEmpty) {
+        _selectedCategory = categories[0];
+      }
+    });
+  }
 
   Future<void> _getImage(ImageSource source) async {
     final picker = ImagePicker();
@@ -83,15 +100,12 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
                         false, // Evita que se cierre al tocar afuera
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        backgroundColor: Colors
-                            .transparent,
-                        contentPadding:
-                            EdgeInsets.zero,
+                        backgroundColor: Colors.transparent,
+                        contentPadding: EdgeInsets.zero,
                         elevation: 0.0,
                         content: Container(
                           height: 100.0,
-                          color: Colors
-                              .transparent,
+                          color: Colors.transparent,
                           child: const Center(
                             child: CircularProgressIndicator(),
                           ),
