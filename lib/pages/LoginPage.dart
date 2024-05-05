@@ -30,29 +30,33 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true ,
         appBar: AppBar(
           title: const Text('Login'),
         ),
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text("Login",
-                  style: TextStyle(color: Colors.black, fontSize: 24)),
-            ),
-            Offstage(
-              offstage: error == '',
-              child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(error, style: TextStyle(color: Colors.red))),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: formLogin(),
-            ),
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 100), // Add this line (20
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text("Login",
+                    style: TextStyle(color: Colors.black, fontSize: 24)),
+              ),
+              Offstage(
+                offstage: error == '',
+                child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(error, style: TextStyle(color: Colors.red))),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: formLogin(),
+              ),
+            ],
+          ),
         ));
   }
 

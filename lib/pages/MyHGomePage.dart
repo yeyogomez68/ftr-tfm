@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tfm_admin/pages/FilePickerPage.dart';
 import 'package:tfm_admin/pages/LoginPage.dart';
 import 'package:tfm_admin/widgets/CameraButton.dart';
+import 'package:tfm_admin/pages/mapa.dart' as mapa;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -12,7 +13,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,10 @@ class _MyHomePageState extends State<MyHomePage> {
           InkWell(
             onTap: () {
               FirebaseAuth.instance.signOut();
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const LoginPage()), (route) => false);
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  (route) => false);
             },
             child: const Icon(Icons.login),
           )
@@ -46,7 +49,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title: Text('Cargar un archivo de datos'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => FilePickerPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => FilePickerPage()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.map),
+              title: Text('Mapa'),
+              onTap: () {
+                //push to mapa
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => mapa.Mapa()));
               },
             ),
           ],
