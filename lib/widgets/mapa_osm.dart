@@ -378,11 +378,17 @@ class MapOSMProvider with ChangeNotifier {
                               'Nombre: $name\nLatitud: $lat\nLongitud: $lng'),
                           actions: <Widget>[                            
                             TextButton(
-                              child: Text('Cerrar'),
+                              child: Text('Fotos'),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
                             ),
+                            TextButton(
+                              child: Text('Cerrar'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            )
                           ],
                         );
                       },
