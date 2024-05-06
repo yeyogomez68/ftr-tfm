@@ -1,4 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -42,8 +44,9 @@ class MapaOSM extends StatelessWidget {
   getMapOptions(BuildContext context) {
     var mapOSMProvider = context.read<MapOSMProvider>();
     return MapOptions(
+      zoom: 16,
       maxZoom: 18,
-      minZoom: 4,
+      minZoom: 1,
       onPositionChanged: (position, hasGesture) {
         if (hasGesture) {
           mapOSMProvider.gesturing();
@@ -92,7 +95,8 @@ class MapOSMProvider with ChangeNotifier {
       await route(buildContext);
       await getNearLine(buildContext);
       await getDistanceTimeToArrive();
-      moveCenter(buildContext);
+      await cargarArboles(buildContext);
+      await moveCenter(buildContext);
       mapaGuideProvider.notify(buildContext);
     }
   }
@@ -307,9 +311,115 @@ class MapOSMProvider with ChangeNotifier {
     return pointCenter;
   }
 
-  //crea arboles = [];
   List<Marker> arboles = [];
-  moveCenter(BuildContext buildContext) {
+  cargarArboles(BuildContext buildContext) async {
+    if (arboles.isEmpty) {
+      var colors = [
+        Colors.green,
+        Colors.lightGreen,
+        Colors.orange,
+        Colors.red,
+        Colors.brown,
+        Colors.cyan,
+        Colors.blue,
+        Colors.lightBlue,
+        Colors.purple,
+        Colors.pink
+      ];
+
+      var treeNames = [];
+
+      //read json file with the trees assets/arboles.json
+      String jsonString = await DefaultAssetBundle.of(buildContext)
+          .loadString('assets/arboles.json');
+      List<dynamic> treeData = jsonDecode(jsonString);
+      var latitude = gpsProvider.locationData.latitude;
+      var longitude = gpsProvider.locationData.longitude;
+      //filter trees near my location
+      treeData = treeData.where((tree) {
+        var lat = double.parse(tree["lat"].toString());
+        var lng = double.parse(tree["lng"].toString());
+        num c = mapToolKit.SphericalUtil.computeDistanceBetween(
+            mapToolKit.LatLng(lat, lng),
+            mapToolKit.LatLng(latitude, longitude));
+        return c < 500;
+      }).toList();
+
+      //distinct tree name and color
+      for (int i = 0; i < treeData.length; i++) {
+        var tree = treeData[i];
+        if (!treeNames.contains(tree["nombre"])) {
+          treeNames.add(tree["nombre"]);
+        }
+      }
+
+      //for each tree in the json file create a marker
+      for (int i = 0; i < treeData.length; i++) {
+        var tree = treeData[i];
+        Color color = colors[treeNames.indexOf(tree["nombre"])];
+
+        double sizeIcon = 20;
+        String name = tree["nombre"];
+        double lat = double.parse(tree["lat"].toString());
+        double lng = double.parse(tree["lng"].toString());
+        var marker = Marker(
+            width: 60,
+            height: 60,
+            point: LatLng(lat, lng),
+            rotate: true,
+            builder: (ctx) => GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: ctx,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Información del árbol'),
+                          content: Text(
+                              'Nombre: $name\nLatitud: $lat\nLongitud: $lng'),
+                          actions: <Widget>[                            
+                            TextButton(
+                              child: Text('Cerrar'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                      width: sizeIcon,
+                      height: sizeIcon,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.nature,
+                              color: color,
+                              size: sizeIcon,
+                            ),
+                            Text(
+                              name,
+                              maxLines: 3,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 8,
+                                color: Colors.black,
+                                letterSpacing: 0,
+                                wordSpacing: 0,
+                                height: 0.8,
+                              ),
+                            )
+                          ])),
+                ));
+        arboles.add(marker);
+      }
+    }
+  }
+
+  moveCenter(BuildContext buildContext) async {
     double rotationangle = 0;
     var pointCenter = LatLng(gpsProvider.locationData.latitude!,
         gpsProvider.locationData.longitude!);
@@ -326,80 +436,7 @@ class MapOSMProvider with ChangeNotifier {
     var radianAngle = gpsProvider.degreeToRadian(rotationangle - 45);
 
     markers.clear();
-    //add 10 markers around the destination
-    if (arboles.isEmpty) {
-      for (int i = 0; i < 10; i++) {
-        LatLng randomPoint = LatLng(
-          pointCenter.latitude + (Random().nextDouble() - 0.5) * 0.01,
-          pointCenter.longitude + (Random().nextDouble() - 0.5) * 0.01,
-        );
-        //random colors for the markers darkgreen, green, lightgreen, orange, red, darkred,brown,coffee,blue,lightblue
-        var colors = [
-          Colors.green,
-          Colors.lightGreen,
-          Colors.orange,
-          Colors.red,
-          Colors.brown,
-          Colors.blue,
-          Colors.lightBlue
-        ];
 
-        var names = [
-          "dark green",
-          "green",
-          "light green",
-          "orange",
-          "red",
-          "dark red",
-          "brown",
-          "coffee",
-          "blue",
-          "light blue"
-        ];
-
-        int index = Random().nextInt(colors.length);
-
-        var color = colors[index];
-        var name = names[index];
-
-        var zoom = mapController.zoom;
-        double sizeIcon = 20; //50 / zoom;
-
-        var marker = Marker(
-            width: 50,
-            height: 50,
-            point: randomPoint,
-            rotate: false,
-            builder: (ctx) => Container(
-                width: sizeIcon,
-                height: sizeIcon,
-                child: Column(children: [
-                  Icon(
-                    Icons.nature,
-                    color: color,
-                    size: sizeIcon,
-                  ),
-                  Container(
-                    height: 20,
-                    //decorated box curved
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.black.withOpacity(0.8)),                    
-                    padding: EdgeInsets.all(0),
-                      child: Center(
-                        child: Text(
-                                            name,
-                                            maxLines: 2,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: 10,color: Colors.white),
-                                          ),
-                      )),
-                ])));
-        arboles.add(marker);
-      }
-    }
-
-    
     try {
       var markerCenter = Marker(
           width: 50,
@@ -459,7 +496,7 @@ class MapOSMProvider with ChangeNotifier {
                 ));
         markers.add(markerDestination);
       }
-    markers.addAll(arboles);
+      markers.addAll(arboles);
       if (iGesturing <= 0) {
         mapController.rotate(-rotationangle.toDouble());
         if (lstLinesPresent.isNotEmpty) {
