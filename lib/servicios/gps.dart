@@ -95,9 +95,9 @@ class GpsProvider with ChangeNotifier {
 
     serviceEnabled = true;
 
-    final LocationSettings locationSettings = LocationSettings(
+    final LocationSettings locationSettings = const LocationSettings(
       accuracy: LocationAccuracy.high,
-      distanceFilter: 100,
+      distanceFilter: 0,
     );
     if(locationData.altitude==0){
       locationData = await Geolocator.getCurrentPosition(

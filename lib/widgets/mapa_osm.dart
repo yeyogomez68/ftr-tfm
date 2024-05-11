@@ -319,15 +319,22 @@ class MapOSMProvider with ChangeNotifier {
         Colors.lightGreen,
         Colors.orange,
         Colors.red,
-        Colors.brown,
+        Colors.pink,
+        Colors.purple,
         Colors.cyan,
         Colors.blue,
         Colors.lightBlue,
-        Colors.purple,
-        Colors.pink
+        Colors.brown,
       ];
-
-      var treeNames = [];
+      var treeNames = [
+        "Buganbil, veranera",
+        "Caballero de la noche, Jazmin, Dama de noche",
+        "Chicala, chirlobirlo, flor amarillo",
+        "Chicala rosado",
+        "Eugenia",
+        "Guayacan de Manizales",
+        "Pino colombiano, pino de pacho, pino romerón"
+      ];
 
       //read json file with the trees assets/arboles.json
       String jsonString = await DefaultAssetBundle.of(buildContext)
@@ -342,9 +349,10 @@ class MapOSMProvider with ChangeNotifier {
         num c = mapToolKit.SphericalUtil.computeDistanceBetween(
             mapToolKit.LatLng(lat, lng),
             mapToolKit.LatLng(latitude, longitude));
-        return c < 500;
+        return c < 1000;
       }).toList();
 
+      /*
       //distinct tree name and color
       for (int i = 0; i < treeData.length; i++) {
         var tree = treeData[i];
@@ -352,6 +360,7 @@ class MapOSMProvider with ChangeNotifier {
           treeNames.add(tree["nombre"]);
         }
       }
+      */
 
       //for each tree in the json file create a marker
       for (int i = 0; i < treeData.length; i++) {
@@ -363,6 +372,14 @@ class MapOSMProvider with ChangeNotifier {
         double lat = double.parse(tree["lat"].toString());
         double lng = double.parse(tree["lng"].toString());
         double altura = double.parse(tree["alto"].toString());
+        String nameSinTilde = name
+            .replaceAll("á", "a")
+            .replaceAll("é", "e")
+            .replaceAll("í", "i")
+            .replaceAll("ó", "o")
+            .replaceAll("ú", "u")
+            .replaceAll(" ", "_")
+            .replaceAll(",", "_");
         var marker = Marker(
             width: 60,
             height: 60,
@@ -375,9 +392,17 @@ class MapOSMProvider with ChangeNotifier {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text('Información del árbol'),
-                          content: Text(
-                              'Nombre: $name\nLatitud: $lat\nLongitud: $lng'
-                              '\nAltura: ${altura.toStringAsFixed(2)} mts'),
+                          content: Column(
+                            children: [
+                              Image.asset(
+                                'assets/$nameSinTilde.png',
+                                fit: BoxFit.cover,
+                              ),
+                              Text(
+                                  'Nombre: $name\nLatitud: $lat\nLongitud: $lng'
+                                  '\nAltura: ${altura.toStringAsFixed(2)} mts'),
+                            ],
+                          ),
                           actions: <Widget>[
                             TextButton(
                               child: const Text('Fotos'),
