@@ -6,13 +6,16 @@ import 'package:tfm_admin/widgets/CameraButton.dart';
 import 'package:tfm_admin/pages/mapa.dart' as mapa;
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  final String categoria;
+  const MyHomePage({super.key, required this.categoria});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState(categoria: categoria);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final String categoria;
+  _MyHomePageState({required this.categoria});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +35,9 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      floatingActionButton: const CameraButton(),
+      
+      floatingActionButton:  CameraButton( categoria: categoria),
+      /*
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -50,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
               title: Text('Cargar un archivo de datos'),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => FilePickerPage()));
+                    MaterialPageRoute(builder: (context) => FilePickerPage(categoria: categoria )));
               },
             ),
             ListTile(
@@ -65,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      */
     );
   }
 }

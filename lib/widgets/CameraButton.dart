@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:tfm_admin/pages/ImagePickerPage.dart'; // Import the CameraPage
 
 class CameraButton extends StatelessWidget {
-  const CameraButton({super.key});
+  final String categoria;
+  const CameraButton({Key? key, required this.categoria}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ImagePickerPage())),
+      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ImagePickerPage( categoria: categoria))),
       child: const Icon(Icons.camera_alt),
     );
   }

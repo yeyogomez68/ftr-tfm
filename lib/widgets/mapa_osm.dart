@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:tfm_admin/pages/MyHGomePage.dart';
 import 'package:tfm_admin/servicios/gps.dart' as gps;
 import 'package:tfm_admin/widgets/mapa_guide.dart' as mapaGuide;
 import 'package:latlong2/latlong.dart';
@@ -362,6 +362,7 @@ class MapOSMProvider with ChangeNotifier {
         String name = tree["nombre"];
         double lat = double.parse(tree["lat"].toString());
         double lng = double.parse(tree["lng"].toString());
+        double altura = double.parse(tree["alto"].toString());
         var marker = Marker(
             width: 60,
             height: 60,
@@ -373,18 +374,24 @@ class MapOSMProvider with ChangeNotifier {
                       context: ctx,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Información del árbol'),
+                          title: const Text('Información del árbol'),
                           content: Text(
-                              'Nombre: $name\nLatitud: $lat\nLongitud: $lng'),
-                          actions: <Widget>[                            
+                              'Nombre: $name\nLatitud: $lat\nLongitud: $lng'
+                              '\nAltura: ${altura.toStringAsFixed(2)} mts'),
+                          actions: <Widget>[
                             TextButton(
-                              child: Text('Fotos'),
+                              child: const Text('Fotos'),
                               onPressed: () {
-                                Navigator.of(context).pop();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MyHomePage(
+                                              categoria: name,
+                                            )));
                               },
                             ),
                             TextButton(
-                              child: Text('Cerrar'),
+                              child: const Text('Cerrar'),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },

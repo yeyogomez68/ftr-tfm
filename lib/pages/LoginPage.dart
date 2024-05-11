@@ -9,6 +9,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:tfm_admin/pages/MyHGomePage.dart';
 import 'package:tfm_admin/pages/NewUserPage.dart';
 import 'package:crypto/crypto.dart';
+import 'package:tfm_admin/pages/mapa.dart' as mapa;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true ,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text('Login'),
         ),
@@ -63,13 +64,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget formLogin() {
     return Form(
         key: _formKey,
-        child: Column(
-            children: [buildEmail(), 
-            buildPassword(), 
-            buildLoginButton(),
-            newUser(),
-            buildOrLine(),
-            buildBtnGoogleApple()]));
+        child: Column(children: [
+          buildEmail(),
+          buildPassword(),
+          buildLoginButton(),
+          newUser(),
+          buildOrLine(),
+          buildBtnGoogleApple()
+        ]));
   }
 
   Widget buildOrLine() {
@@ -92,7 +94,12 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () async {
             await getInGoogle();
             if (FirebaseAuth.instance.currentUser != null) {
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const MyHomePage()), (Route<dynamic> route) => false);
+              /*
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyHomePage()),
+                  (Route<dynamic> route) => false);
+                  */
             }
           },
         ),
@@ -103,7 +110,12 @@ class _LoginPageState extends State<LoginPage> {
             onPressed: () async {
               await getInApple();
               if (FirebaseAuth.instance.currentUser != null) {
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const MyHomePage()), (Route<dynamic> route) => false);
+                /*
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyHomePage()),
+                    (Route<dynamic> route) => false);
+                    */
               }
             },
           ),
@@ -112,24 +124,27 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<UserCredential> getInGoogle() async { 
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn(); 
-    final GoogleSignInAuthentication? googleAuthentication = await googleUser?.authentication;
+  Future<UserCredential> getInGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuthentication =
+        await googleUser?.authentication;
     final credentials = GoogleAuthProvider.credential(
-      accessToken: googleAuthentication?.accessToken,
-      idToken: googleAuthentication?.idToken
-    );
+        accessToken: googleAuthentication?.accessToken,
+        idToken: googleAuthentication?.idToken);
     return FirebaseAuth.instance.signInWithCredential(credentials);
   }
 
-  Future<UserCredential> getInApple() async { 
+  Future<UserCredential> getInApple() async {
     final rawNoce = generateNonce();
     final nonce = sha256ToString(rawNoce);
-    final appleCredentials = await SignInWithApple.getAppleIDCredential(scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName], nonce: nonce); 
-    final authCredential = OAuthProvider("apple.com").credential(
-      idToken: appleCredentials.identityToken,
-      rawNonce: rawNoce
-    );
+    final appleCredentials = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName
+        ],
+        nonce: nonce);
+    final authCredential = OAuthProvider("apple.com")
+        .credential(idToken: appleCredentials.identityToken, rawNonce: rawNoce);
     return await FirebaseAuth.instance.signInWithCredential(authCredential);
   }
 
@@ -147,13 +162,13 @@ class _LoginPageState extends State<LoginPage> {
         const Text('¿Eres Nuevo?'),
         TextButton(
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const NewUserPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const NewUserPage()));
           },
           child: const Text('Registrate'),
         )
       ],
     );
-
   }
 
   Widget buildEmail() {
@@ -200,10 +215,14 @@ class _LoginPageState extends State<LoginPage> {
             if (userCredential != null) {
               if (userCredential.user != null) {
                 if (userCredential.user!.emailVerified) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => mapa.Mapa()));
+                  /*
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => const MyHomePage()),
                       (route) => false);
+                      */
                 } else {
                   setState(() {
                     error = 'Verifica tu correo electronico primero';
@@ -211,7 +230,8 @@ class _LoginPageState extends State<LoginPage> {
                 }
               } else {
                 setState(() {
-                  error = 'Upsss Paso algo y no sabemos que fue, intenta de nuevo';
+                  error =
+                      'Upsss Paso algo y no sabemos que fue, intenta de nuevo';
                 });
               }
             }

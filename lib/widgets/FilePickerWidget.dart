@@ -5,6 +5,8 @@ import 'package:tfm_admin/db/DatabaseHelper.dart';
 import 'package:tfm_admin/model/TreeDataModel.dart';
 
 class FilePickerWidget extends StatefulWidget {
+  final String categoria;
+  const FilePickerWidget({Key? key, required this.categoria}) : super(key: key);
   @override
   _FilePickerWidgetState createState() => _FilePickerWidgetState();
 }

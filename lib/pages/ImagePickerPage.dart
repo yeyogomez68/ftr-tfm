@@ -8,14 +8,18 @@ import 'package:tfm_admin/functions/ImageUtils.dart';
 import 'package:tfm_admin/functions/StorageUtils.dart';
 
 class ImagePickerPage extends StatefulWidget {
+  final String categoria;
+  const ImagePickerPage({Key? key, required this.categoria}) : super(key: key);
   @override
-  _ImagePickerPageState createState() => _ImagePickerPageState();
+  _ImagePickerPageState createState() => _ImagePickerPageState( categoria: categoria);
 }
 
 class _ImagePickerPageState extends State<ImagePickerPage> {
   File? _imageFile;
   String _selectedCategory = '';
   List<String> _categories = [];
+  final String categoria;
+  _ImagePickerPageState({required this.categoria});
 
   @override
   void initState() {
@@ -25,6 +29,8 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
 
   Future<void> _loadCategories() async {
     List<String> categories = await FireDataBase.getCategories();
+    //filter categories by the category passed as parameter
+    categories = categories.where((element) => element == categoria).toList();
     setState(() {
       _categories = categories;
       if (categories.isNotEmpty) {
