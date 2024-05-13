@@ -11,7 +11,8 @@ class ImagePickerPage extends StatefulWidget {
   final String categoria;
   const ImagePickerPage({Key? key, required this.categoria}) : super(key: key);
   @override
-  _ImagePickerPageState createState() => _ImagePickerPageState( categoria: categoria);
+  _ImagePickerPageState createState() =>
+      _ImagePickerPageState(categoria: categoria);
 }
 
 class _ImagePickerPageState extends State<ImagePickerPage> {

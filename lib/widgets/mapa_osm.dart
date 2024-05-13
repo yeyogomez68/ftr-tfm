@@ -324,7 +324,7 @@ class MapOSMProvider with ChangeNotifier {
         Colors.cyan,
         Colors.blue,
         Colors.lightBlue,
-        Colors.brown,
+        Colors.brown
       ];
       var treeNames = [
         "Buganbil, veranera",
