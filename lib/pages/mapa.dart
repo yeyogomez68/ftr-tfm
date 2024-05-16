@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:tfm_admin/widgets/mapa_guide.dart' as mapaGuide;
 import 'package:tfm_admin/widgets/mapa_osm.dart';
@@ -7,6 +6,7 @@ import '../widgets/mapa_osm.dart' as mapaOSM;
 import '../pages/nomination_search.dart' as nominationSearch;
 import 'package:tfm_admin/servicios/gps.dart' as gpsProvider;
 import 'package:tfm_admin/widgets/mapa_guide.dart' as mapaGuide;
+import 'package:tfm_admin/pages/MyHGomePage.dart';
 
 class Mapa extends StatelessWidget {
   const Mapa({Key? key}) : super(key: key);
@@ -21,20 +21,24 @@ class Mapa extends StatelessWidget {
         ChangeNotifierProvider(
             create: (_) => nominationSearch.NominationSearchProvider()),
       ],
-      builder: (context, child) {
-        return Material(
-          color: Colors.white,
-          child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Stack(children: [
-                buildContent(context),
-                buildHeader(context),
-                buildGuide(context),
-                buildFooter(context),
-                buildNominationResults(context),
-              ])),
+      builder: (buildContext, child) {
+        return Scaffold(
+          drawer: drawer(buildContext),
+          body: Builder(
+            builder: (BuildContext context) {
+              return Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Stack(children: [
+                    buildContent(context),
+                    buildHeader(context),
+                    buildGuide(context),
+                    buildFooter(context),
+                    buildNominationResults(context),
+                  ]));
+            },
+          ),
         );
       },
     );
@@ -44,24 +48,51 @@ class Mapa extends StatelessWidget {
     var nominationSearchProvider =
         buildContext.read<nominationSearch.NominationSearchProvider>();
     return Positioned(
-      top: 0,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(10, 40, 10, 0),
-        width: MediaQuery.of(buildContext).size.width,
-        height: 100,
-        color: Theme.of(buildContext).cardColor.withOpacity(.7),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pop(buildContext);
-                },
-                icon: Icon(Icons.arrow_back_ios,
-                    size: 40, color: Theme.of(buildContext).primaryColor)),
-            Expanded(child: nominationSearch.NominationSearchForm())
-          ],
-        ),
+        top: 0,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(10, 40, 10, 0),
+          width: MediaQuery.of(buildContext).size.width,
+          height: 100,
+          color: Theme.of(buildContext).cardColor.withOpacity(.7),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    Scaffold.of(buildContext)
+                        .openDrawer(); // Activate the drawer
+                  },
+                  icon: Icon(Icons.menu,
+                      size: 40, color: Theme.of(buildContext).primaryColor)),
+              Expanded(child: nominationSearch.NominationSearchForm())
+            ],
+          ),
+        ));
+  }
+
+  drawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            child: Text('Urban Tree Vision'),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+          ),
+          ListTile(
+            title: const Text('Capturar árboles'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyHomePage(
+                            categoria: "",
+                          )));
+            },
+          )          
+        ],
       ),
     );
   }

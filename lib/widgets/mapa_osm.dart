@@ -44,7 +44,7 @@ class MapaOSM extends StatelessWidget {
   getMapOptions(BuildContext context) {
     var mapOSMProvider = context.read<MapOSMProvider>();
     return MapOptions(
-      zoom: 16,
+      zoom: 20,
       maxZoom: 18,
       minZoom: 1,
       onPositionChanged: (position, hasGesture) {

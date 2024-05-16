@@ -31,7 +31,9 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
   Future<void> _loadCategories() async {
     List<String> categories = await FireDataBase.getCategories();
     //filter categories by the category passed as parameter
-    categories = categories.where((element) => element == categoria).toList();
+    if (categoria.isNotEmpty) {
+      categories = categories.where((element) => element == categoria).toList();
+    }
     setState(() {
       _categories = categories;
       if (categories.isNotEmpty) {
