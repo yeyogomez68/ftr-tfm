@@ -395,7 +395,7 @@ class MapOSMProvider with ChangeNotifier {
                           content: Column(
                             children: [
                               Image.asset(
-                                'assets/$nameSinTilde.png',
+                                'assets/$nameSinTilde.jpg',
                                 fit: BoxFit.cover,
                               ),
                               Text(
